@@ -1,5 +1,5 @@
 # node-dockgen
-A ***'simple'*** nodeJS lab to generate basic `Dockerfile``
+A ***'simple'*** nodeJS lab to generate basic `Dockerfile`
 
 ---
 
