@@ -62,10 +62,6 @@ CMD ["python", "app.py"]
 
 6. A popup message will notify you that the Dockerfile has been generated in the project folder.
 
-### Clear Form
-
-To clear all text field inputs, click the "Clear Form" button.
-
 ## Author
 
 Alex Mendes
