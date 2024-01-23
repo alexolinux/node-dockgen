@@ -49,7 +49,7 @@ To run this project, you need to have the following software installed on your s
 
 4. Click the "Generate Dockerfile" button.
 
-Generated Dockerfile example:
+5. A Basic Dockerfile will be generated based on your input, and you will see the generated Dockerfile on the page.
 
 ```yaml
 FROM alexmbarbosa/flask-python3:latest
@@ -59,8 +59,6 @@ EXPOSE 5000
 
 CMD ["python", "app.py"]
 ```
-
-5. A Basic Dockerfile will be generated based on your input, and you will see the generated Dockerfile on the page.
 
 6. A popup message will notify you that the Dockerfile has been generated in the project folder.
 
