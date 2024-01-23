@@ -8,7 +8,7 @@ CMD ["node", "<%= appName %>.js"]
 <% } else if (dockerfileType === 'python') { %>
 CMD ["python", "app.py"]
 <% } else if (dockerfileType === 'flask') { %>
-CMD ["flask", "app.py"]
+CMD ["python", "app.py"]
 <% } else if (dockerfileType === 'nginx') { %>
 CMD ["nginx", "-g", "daemon off;"]
 <% } else { %>
