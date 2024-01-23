@@ -1,0 +1,16 @@
+FROM <%= imageName %>:<%= imageVersion %>
+WORKDIR <%= copyDestination %>
+COPY <%= copySource %> <%= copyDestination %>
+EXPOSE <%= portNumber %>
+
+<% if (dockerfileType === 'nodejs') { %>
+CMD ["node", "<%= appName %>.js"]
+<% } else if (dockerfileType === 'python') { %>
+CMD ["python", "app.py"]
+<% } else if (dockerfileType === 'flask') { %>
+CMD ["flask", "app.py"]
+<% } else if (dockerfileType === 'nginx') { %>
+CMD ["nginx", "-g", "daemon off;"]
+<% } else { %>
+CMD ["<%= dockerfileType %>"]
+<% } %>
