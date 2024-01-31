@@ -1,6 +1,12 @@
 pipeline {
   agent any
 
+  environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub') 
+        DOCKER_IMAGE_NAME = "alexmbarbosa/node-dockgen:$BUILD_NUMBER"
+  }
+
+
   stages {
     stage('Checkout') {
       steps {
@@ -19,6 +25,8 @@ pipeline {
     stage('Push') {
       steps {
         script {
+          withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')])
+          sh "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD"
           sh 'docker push alexmbarbosa/node-dockgen:$BUILD_NUMBER'
         }
       }
