@@ -11,8 +11,15 @@ pipeline {
     stage('Build') {
       steps {
         script {
-          sh 'docker build -t registry.example.com/node-dockgen:$BUILD_NUMBER .'
-          sh 'docker push registry.example.com/node-dockgen:$BUILD_NUMBER'
+          sh 'docker build -t alexmbarbosa/node-dockgen:$BUILD_NUMBER .'
+        }
+      }
+    }
+
+    stage('Push') {
+      steps {
+        script {
+          sh 'docker push alexmbarbosa/node-dockgen:$BUILD_NUMBER'
         }
       }
     }
@@ -30,6 +37,7 @@ pipeline {
   post {
     success {
       // Cleanup actions
+      echo "Successful deployment."
     }
     failure {
       // Additional actions on build failure
