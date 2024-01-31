@@ -26,7 +26,7 @@ To run this project, you need to have the following software installed on your s
 2. Navigate to the project directory:
 
     ```bash
-    cd node-dockgen
+    cd node-dockgen/src
     ```
 
 3. Install dependencies:
