@@ -23,7 +23,8 @@ pipeline {
     stage('Build') {
       steps {
         script {
-          sh 'docker build -t alexmbarbosa/node-dockgen:$BUILD_NUMBER .'
+          //sh 'docker build -t alexmbarbosa/node-dockgen:$BUILD_NUMBER .'
+          dockerapp = docker.build("alexmbarbosa/node-dockgen:$BUILD_NUMBER", '-f ./src/Dockerfile ./src')
         }
       }
     }
