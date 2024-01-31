@@ -32,9 +32,14 @@ pipeline {
     stage('Push') {
       steps {
         script {
-          withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')])
-          sh "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD"
-          sh 'docker push alexmbarbosa/node-dockgen:$BUILD_NUMBER'
+          //withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')])
+          //sh "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD"
+          //sh 'docker push alexmbarbosa/node-dockgen:$BUILD_NUMBER'
+          
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+            docker.app.push("$BUILD_NUMBER")
+          
+          }
         }
       }
     }
