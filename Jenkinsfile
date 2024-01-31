@@ -2,15 +2,15 @@ pipeline {
   //agent any
   agent {
     kubernetes {
-      label 'kube-agent'
       defaultContainer 'jnlp'
+      //label 'kube-agent'
     }
   }
 
-  environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub') 
-        DOCKER_IMAGE_NAME = "alexmbarbosa/node-dockgen:$BUILD_NUMBER"
-  }
+  //environment {
+  //      DOCKERHUB_CREDENTIALS = credentials('dockerhub') 
+  //      DOCKER_IMAGE_NAME = "alexmbarbosa/node-dockgen:$BUILD_NUMBER"
+  //}
 
 
   stages {
