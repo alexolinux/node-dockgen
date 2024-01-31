@@ -20,7 +20,7 @@ To run this project, you need to have the following software installed on your s
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/dockerfile-generator.git
+    git clone https://github.com/alexolinux/node-dockgen.git
     ```
 
 2. Navigate to the project directory:
@@ -67,3 +67,4 @@ CMD ["python", "app.py"]
 Alex Mendes
 
 <https://www.linkedin.com/in/mendesalex>
+
