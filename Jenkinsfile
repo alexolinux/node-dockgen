@@ -23,6 +23,10 @@ pipeline {
     stage('Check Docker'){
       steps {
         script {
+          // Print the current PATH for debugging
+          sh 'echo $PATH'
+          sh 'ls -lrt /usr/local/bin'
+          
           def dockerInstalled = sh(script: 'command -v docker', returnStatus: true) == 0
 
           if (dockerInstalled) {
@@ -38,9 +42,7 @@ pipeline {
 
     stage('Build') {
       steps {
-        script {
-          // Print the current PATH for debugging
-          sh 'echo $PATH'
+        script {          
           //sh 'docker build -t alexmbarbosa/node-dockgen:$BUILD_NUMBER .'
           dockerapp = docker.build("alexmbarbosa/node-dockgen:$BUILD_NUMBER", '-f ./src/Dockerfile ./src')
         }
