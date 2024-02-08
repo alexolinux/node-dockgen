@@ -24,6 +24,7 @@ pipeline {
       steps {
         script {
           // Print the current PATH for debugging
+          sh 'export PATH=$PATH:/usr/local/bin'
           sh 'echo $PATH'
           sh 'ls -lrt /usr/local/bin'
           
