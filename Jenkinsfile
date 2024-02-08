@@ -20,6 +20,15 @@ pipeline {
       }
     }
 
+    stage('Initialize Docker') {
+      steps {
+        script {
+          // Initialize Docker environment in Jenkins Pipeline
+          sh 'eval $(docker-machine env -u)'
+        }
+      }
+    }
+
     stage('Check Docker'){
       steps {
         script {
