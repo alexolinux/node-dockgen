@@ -1,11 +1,11 @@
 pipeline {
-  agent any
-  //agent {
-  //  kubernetes {
-  //    defaultContainer 'jnlp'
+  //agent any
+  agent {
+    kubernetes {
+      defaultContainer 'jnlp'
   //    //label 'kube-agent'
-  //  }
-  //}
+    }
+  }
 
   //environment {
   //      DOCKERHUB_CREDENTIALS = credentials('dockerhub') 
