@@ -1,11 +1,11 @@
 pipeline {
-  //agent any
-  agent {
-    kubernetes {
-      defaultContainer 'jnlp'
-      //label 'kube-agent'
-    }
-  }
+  agent any
+  //agent {
+  //  kubernetes {
+  //    defaultContainer 'jnlp'
+  //    //label 'kube-agent'
+  //  }
+  //}
 
   //environment {
   //      DOCKERHUB_CREDENTIALS = credentials('dockerhub') 
@@ -17,6 +17,22 @@ pipeline {
     stage('Checkout') {
       steps {
         checkout scm
+      }
+    }
+
+    stage('Check Docker'){
+      steps {
+        script {
+          def dockerInstalled = sh(script: 'command -v docker', returnStatus: true) == 0
+
+          if (dockerInstalled) {
+            echo 'Docker is installed'
+            // Your further Docker-related steps or commands can be added here
+          }
+          else {
+            error 'Docker is not installed. Please install Docker before running this pipeline.'
+          }          
+        }
       }
     }
 
