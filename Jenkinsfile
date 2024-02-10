@@ -1,65 +1,53 @@
-pipeline {
-  //agent any
-  agent {
+pipeline{
+  agent{
     kubernetes {
-      defaultContainer 'jnlp'
-  //    //label 'kube-agent'
+      //defaultContainer '$CONTAINER_TEMPLATE'
+      label 'agent'
     }
   }
 
-  //environment {
-  //      DOCKERHUB_CREDENTIALS = credentials('dockerhub') 
-  //      DOCKER_IMAGE_NAME = "alexmbarbosa/node-dockgen:$BUILD_NUMBER"
-  //}
-
-
-  stages {
+  stages{
     stage('Checkout') {
       steps {
         checkout scm
       }
     }
 
-    stage('Check Docker'){
+    stage('DockerCheck'){
       steps {
         script {
           // Print the current PATH for debugging
           sh 'export PATH=$PATH:/usr/local/bin'
           sh 'echo $PATH'
-          sh 'ls -lrt /usr/local/bin'
           
-          def dockerInstalled = sh(script: 'command -v docker', returnStatus: true) == 0
+          def dockerInstalled = sh(script: 'docker -v', returnStatus: true) == 0
 
           if (dockerInstalled) {
             echo 'Docker is installed'
-            // Your further Docker-related steps or commands can be added here
           }
           else {
-            error 'Docker is not installed. Please install Docker before running this pipeline.'
-          }          
+            error 'Docker is not found for some unknown reason.'
+          }
         }
       }
     }
 
-    stage('Build') {
+    stage('DockerBuild') {
       steps {
-        script {          
+        script {     
+          sh 'echo "Build Image..."'     
           //sh 'docker build -t alexmbarbosa/node-dockgen:$BUILD_NUMBER .'
-          dockerapp = docker.build("alexmbarbosa/node-dockgen:$BUILD_NUMBER", '-f ./src/Dockerfile ./src')
+          dockerapp = docker.build("alexmbarbosa/node-dockgen:$BUILD_NUMBER", ".")
         }
       }
     }
 
-    stage('Push') {
+    stage('DockerPush') {
       steps {
         script {
-          //withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')])
-          //sh "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD"
-          //sh 'docker push alexmbarbosa/node-dockgen:$BUILD_NUMBER'
-          
-          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+          sh 'echo "Push Image to Registry..."'
+          docker.withRegistry("https://registry.hub.docker.com", "dockerhub") {
             docker.app.push("$BUILD_NUMBER")
-          
           }
         }
       }
@@ -68,21 +56,23 @@ pipeline {
     stage('KubeDeploy') {
       steps {
         script {
-          // Deploy to Kubernetes using kubectl
+          sh 'echo "Kubernetes deployment..."'
           sh 'kubectl apply -f kubernetes/deployment.yaml'
         }
       }
     }
-  }
 
-  post {
-    success {
-      // Cleanup actions
-      echo "Successful deployment."
-    }
-    failure {
-      // Additional actions on build failure
-      echo "Process has failed."
-    }
+  }
+  
+  post{
+      always{
+          echo "======== Pipeline Finished ========"
+      }
+      success{
+          echo "======== Pipeline executed successfully! ========"
+      }
+      failure{
+          echo "======== Pipeline execution failed ========"
+      }
   }
 }
