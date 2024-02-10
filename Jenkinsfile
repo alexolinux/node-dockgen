@@ -5,7 +5,7 @@ pipeline{
       defaultContainer 'kube-agent'
 
       //label 'agent' //<< deprecated (replaced by inheritFrom)
-      inheritFrom 'agent'
+      //inheritFrom 'agent'
 
     }
   }
