@@ -4,10 +4,9 @@ pipeline{
       //PodTemplate Name: kube-agent
       defaultContainer 'kube-agent'
 
-      //label 'agent' << deprecated (replaced by inheritFrom)
-      inheritFrom 'agent'
+      label 'agent' //<< deprecated (replaced by inheritFrom)
+      //inheritFrom 'agent'
 
-      yaml pod
     }
   }
 
