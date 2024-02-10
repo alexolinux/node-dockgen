@@ -2,7 +2,7 @@ pipeline{
   agent{
     kubernetes {
       //PodTemplate Name: kube-agent
-      defaultContainer 'jnlp'
+      defaultContainer 'kube-agent'
 
       //label 'agent' //<< deprecated (replaced by inheritFrom)
       inheritFrom 'agent'
