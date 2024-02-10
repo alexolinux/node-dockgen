@@ -3,14 +3,15 @@ pipeline{
     kubernetes {
       //PodTemplate Name: kube-agent
       defaultContainer 'kube-agent'
-
+      label podLabel
       //label 'agent' << deprecated (replaced by inheritFrom)
-      inheritFrom 'agent'
+      //inheritFrom 'agent'
+      yaml pod
     }
   }
 
   stages{
-    
+
     stage('Checkout') {
       steps {
         checkout scm
