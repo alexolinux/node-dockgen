@@ -1,91 +1,46 @@
-pipeline{
-  agent{
-    kubernetes {
-      //PodTemplate Name: kube-agent
-      defaultContainer "kube-agent"
+podTemplate(
+  cloud: 'kubernetes', 
+  containers: [
+    containerTemplate(
+      image: 'alexmbarbosa/jenkins-agent:latest', 
+      livenessProbe: containerLivenessProbe(
+        execArgs: '',
+        failureThreshold: 0,
+        initialDelaySeconds: 0,
+        periodSeconds: 0,
+        successThreshold: 0,
+        timeoutSeconds: 0),
+      name: 'kube-agent',
+      resourceLimitCpu: '',
+      resourceLimitEphemeralStorage: '',
+      resourceLimitMemory: '',
+      resourceRequestCpu: '',
+      resourceRequestEphemeralStorage: '',
+      resourceRequestMemory: '',
+      workingDir: '/home/jenkins')],
+  inheritFrom: 'kube-agent', label: 'kube-agent', name: 'kube-agent', namespace: 'devops-tools') {
 
-      label 'agent' //<< deprecated (replaced by inheritFrom)
-      //inheritFrom 'agent'
-
-
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    agent: kube-agent
-spec:
-  containers:
-  - name: kube-agent
-    image: alexmbarbosa/jenkins-agent:latest
-"""
-
-    }
-  }
-
-  stages{
-
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
-
-    stage('DockerBuild') {
-      steps {
-        script {
-          sh 'echo "Build Image..."'
-
-          withCredentials([usernamePassword(
-            credentialsId: 'dockerhub',
-            usernameVariable: 'DOCKER_USERNAME',
-            passwordVariable: 'DOCKER_PASSWORD')]) {
-              //sh 'docker build -t ${DOCKER_USERNAME}/node-dockgen:$BUILD_NUMBER .'
-              dockerapp = docker.build("${DOCKER_USERNAME}/node-dockgen:$BUILD_NUMBER", ".")
-          }
-
-          
+    // some block
+    node('kube-agent') {
+        stage('Initialization') {
+            echo 'Running initialization steps...'
         }
-      }
-    }
 
-    stage('DockerPush') {
-      steps {
-        script {
-          sh 'echo "Push Image to Registry..."'
-
-          withCredentials([usernamePassword(
-            credentialsId: 'dockerhub',
-            usernameVariable: 'DOCKER_USERNAME',
-            passwordVariable: 'DOCKER_PASSWORD')]) {
-              docker.withRegistry("https://registry.hub.docker.com", "dockerhub") {
-              docker.app.push("$BUILD_NUMBER")
-            }
-          }          
+        stage('Build') {
+            echo 'Building...'
         }
-      }
-    }
 
-    stage('KubeDeploy') {
-      steps {
-        script {
-          sh 'echo "Kubernetes deployment..."'
-          //sh 'kubectl apply -f kubernetes/deployment.yaml'
+        stage('Testing') {
+            echo 'Running tests...'
         }
-      }
+        
+        // Add more stages or steps as needed
+
+        stage('Cleanup') {
+            echo 'Performing cleanup...'
+        }
     }
 
-  }
-  
-  post{
-      always{
-          echo "======== Pipeline Finished ========"
-      }
-      success{
-          echo "======== Pipeline executed successfully! ========"
-      }
-      failure{
-          echo "======== Pipeline execution failed ========"
-      }
-  }
+    // Add more steps or blocks outside the 'node' block as needed
+    echo 'Outside of the Kubernetes node block...'
 }
