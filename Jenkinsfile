@@ -2,10 +2,23 @@ pipeline{
   agent{
     kubernetes {
       //PodTemplate Name: kube-agent
-      defaultContainer 'kube-agent'
+      defaultContainer "kube-agent"
 
-      //label 'agent' //<< deprecated (replaced by inheritFrom)
+      label 'agent' //<< deprecated (replaced by inheritFrom)
       //inheritFrom 'agent'
+
+
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    agent: kube-agent
+spec:
+  containers:
+  - name: kube-agent
+    image: alexmbarbosa/jenkins-agent:latest
+"""
 
     }
   }
