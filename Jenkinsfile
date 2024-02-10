@@ -10,28 +10,10 @@ pipeline{
   }
 
   stages{
+    
     stage('Checkout') {
       steps {
         checkout scm
-      }
-    }
-
-    stage('DockerCheck'){
-      steps {
-        script {
-          // Print the current PATH for debugging
-          sh 'export PATH=$PATH:/usr/local/bin'
-          sh 'echo $PATH'
-          
-          def dockerInstalled = sh(script: 'docker -v', returnStatus: true) == 0
-
-          if (dockerInstalled) {
-            echo 'Docker is installed'
-          }
-          else {
-            error 'Docker is not found for some unknown reason.'
-          }
-        }
       }
     }
 
