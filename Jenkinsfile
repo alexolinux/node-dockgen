@@ -1,8 +1,11 @@
 pipeline{
   agent{
     kubernetes {
-      //defaultContainer '$CONTAINER_TEMPLATE'
-      label 'agent'
+      //PodTemplate Name: kube-agent
+      defaultContainer 'kube-agent'
+
+      //label 'agent' << deprecated (replaced by inheritFrom)
+      inheritFrom 'agent'
     }
   }
 
@@ -34,10 +37,18 @@ pipeline{
 
     stage('DockerBuild') {
       steps {
-        script {     
-          sh 'echo "Build Image..."'     
-          //sh 'docker build -t alexmbarbosa/node-dockgen:$BUILD_NUMBER .'
-          dockerapp = docker.build("alexmbarbosa/node-dockgen:$BUILD_NUMBER", ".")
+        script {
+          sh 'echo "Build Image..."'
+
+          withCredentials([usernamePassword(
+            credentialsId: 'dockerhub',
+            usernameVariable: 'DOCKER_USERNAME',
+            passwordVariable: 'DOCKER_PASSWORD')]) {
+              //sh 'docker build -t ${DOCKER_USERNAME}/node-dockgen:$BUILD_NUMBER .'
+              dockerapp = docker.build("${DOCKER_USERNAME}/node-dockgen:$BUILD_NUMBER", ".")
+          }
+
+          
         }
       }
     }
@@ -46,9 +57,15 @@ pipeline{
       steps {
         script {
           sh 'echo "Push Image to Registry..."'
-          docker.withRegistry("https://registry.hub.docker.com", "dockerhub") {
-            docker.app.push("$BUILD_NUMBER")
-          }
+
+          withCredentials([usernamePassword(
+            credentialsId: 'dockerhub',
+            usernameVariable: 'DOCKER_USERNAME',
+            passwordVariable: 'DOCKER_PASSWORD')]) {
+              docker.withRegistry("https://registry.hub.docker.com", "dockerhub") {
+              docker.app.push("$BUILD_NUMBER")
+            }
+          }          
         }
       }
     }
@@ -57,7 +74,7 @@ pipeline{
       steps {
         script {
           sh 'echo "Kubernetes deployment..."'
-          sh 'kubectl apply -f kubernetes/deployment.yaml'
+          //sh 'kubectl apply -f kubernetes/deployment.yaml'
         }
       }
     }
